@@ -4,7 +4,7 @@
 <dict>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>webcredentials:www.brightid.org</string>
+		<string>webcredentials:explorer.brightid.org</string>
 	</array>
 </dict>
 </plist>
