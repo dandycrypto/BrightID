@@ -120,8 +120,12 @@ class BackupScreen extends React.Component<Props, State> {
             placeholderTextColor="#9e9e9e"
             style={styles.textInput}
             autoCorrect={false}
-            textContentType="password"
+            textContentType="newPassword"
+            passwordRules="required: lower; required: upper; required: digit; required: [-]; minlength: 12;"
             autoCompleteType="password"
+            keyboardType={
+              DEVICE_OS === 'android' ? 'visible-password' : 'default'
+            }
             underlineColorAndroid="transparent"
             secureTextEntry={true}
             onFocus={this.handleTextFocus}
@@ -133,8 +137,12 @@ class BackupScreen extends React.Component<Props, State> {
             placeholderTextColor="#9e9e9e"
             style={styles.textInput}
             autoCorrect={false}
-            textContentType="password"
+            textContentType="newPassword"
+            passwordRules="required: lower; required: upper; required: digit; required: [-]; minlength: 12;"
             autoCompleteType="password"
+            keyboardType={
+              DEVICE_OS === 'android' ? 'visible-password' : 'default'
+            }
             underlineColorAndroid="transparent"
             secureTextEntry={true}
             onBlur={this.handleTextBlur}

@@ -138,6 +138,9 @@ class RestoreScreen extends React.Component<Props, State> {
             autoCorrect={false}
             textContentType="password"
             autoCompleteType="password"
+            keyboardType={
+              DEVICE_OS === 'android' ? 'visible-password' : 'default'
+            }
             underlineColorAndroid="transparent"
             secureTextEntry={true}
           />
