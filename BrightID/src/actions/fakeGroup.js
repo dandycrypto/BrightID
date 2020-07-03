@@ -1,6 +1,7 @@
 // @flow
 
 import nacl from 'tweetnacl';
+import stringify from 'fast-json-stable-stringify';
 import api from '../Api/BrightId';
 import {
   strToUint8Array,
@@ -20,18 +21,16 @@ export const fakeJoinGroup = ({
 }) => {
   let timestamp = Date.now();
   let sk = objToUint8(secretKey);
-  let message = `Add Membership${id}${group}${timestamp}`;
-  let sig = uInt8ArrayToB64(nacl.sign.detached(strToUint8Array(message), sk));
-
-  const op = {
-    _key: hash(message),
+  let op = {
     name: 'Add Membership',
     id,
     group,
-    sig,
     timestamp,
-    v: 4,
+    v: 5
   };
+  const message = stringify(op);
+  op.sig = uInt8ArrayToB64(nacl.sign.detached(strToUint8Array(message), sk));
+  op._key = hash(message);
   console.log('joining', op);
   return api.api
     .put(`/operations/${op._key}`, op)

@@ -1,6 +1,7 @@
 // @flow
 
 import nacl from 'tweetnacl';
+import stringify from 'fast-json-stable-stringify';
 import RNFetchBlob from 'rn-fetch-blob';
 import { Alert, NativeModules } from 'react-native';
 import {
@@ -39,7 +40,14 @@ export const addFakeConnection = () => async (
   const name = `${firstName} ${lastName}`;
   const score = Math.floor(Math.random() * 99);
   const timestamp = Date.now();
-  const message = `Add Connection${connectId}${id}${timestamp}`;
+  const op = {
+    name: "Add Connection",
+    id1: connectId,
+    id2: id,
+    timestamp,
+    v: 5
+  };
+  const message = stringify(op);
   const signedMessage = uInt8ArrayToB64(
     nacl.sign.detached(strToUint8Array(message), secretKey),
   );

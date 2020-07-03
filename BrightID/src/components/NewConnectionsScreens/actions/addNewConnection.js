@@ -1,6 +1,7 @@
 // @flow
 
 import nacl from 'tweetnacl';
+import stringify from 'fast-json-stable-stringify';
 import { saveImage } from '@/utils/filesystem';
 import { strToUint8Array, uInt8ArrayToB64, hash } from '@/utils/encoding';
 import { obtainKeys } from '@/utils/keychain';
@@ -35,8 +36,14 @@ export const addNewConnection = () => async (
       if (connectUserData.timestamp > connectionDate + TIME_FUDGE) {
         throw new Error("timestamp can't be in the future");
       }
-
-      const message = `Add Connection${connectUserData.id}${username}${connectUserData.timestamp}`;
+      const op = {
+        name: "Add Connection",
+        id1: connectUserData.id,
+        id2: username,
+        timestamp: connectUserData.timestamp,
+        v: 5
+      };
+      const message = stringify(op);
       const signedMessage = uInt8ArrayToB64(
         nacl.sign.detached(strToUint8Array(message), secretKey),
       );
@@ -51,23 +58,23 @@ export const addNewConnection = () => async (
       // We will sign a connection request and upload it. The other user will
       // make the API call to create the connection.
       const timestamp = Date.now();
-      const message = `Add Connection${username}${connectUserData.id}${timestamp}`;
+      const op = {
+        name: "Add Connection",
+        id1: username,
+        id2: connectUserData.id,
+        timestamp,
+        v: 5
+      };
+      const message = stringify(op);
       const signedMessage = uInt8ArrayToB64(
         nacl.sign.detached(strToUint8Array(message), secretKey),
       );
       dispatch(encryptAndUploadProfile(peerQrData, timestamp, signedMessage));
 
       // Listen for add connection operation to be completed by other party
-      let opName = 'Add Connection';
-      let opMessage = opName + username + connectUserData.id + timestamp;
       console.log(
-        `Responder opMessage: ${opMessage} - hash: ${hash(opMessage)}`,
+        `Responder opMessage: ${message} - hash: ${hash(message)}`,
       );
-      const op = {
-        _key: hash(opMessage),
-        name: opName,
-        timestamp,
-      };
       dispatch(addOperation(op));
     }
 
