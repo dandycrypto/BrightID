@@ -42,7 +42,7 @@ class BrightId {
   }
 
   static checkHash(response, op) {
-    if (response.data._key != op._key) {
+    if (response.data.data._key != op._key) {
       throw new Error('Invalid operation hash returned from server');
     }
   }
@@ -168,7 +168,7 @@ class BrightId {
     };
 
     const message = stringify(op);
-	op.sig = uInt8ArrayToB64(
+    op.sig = uInt8ArrayToB64(
       nacl.sign.detached(strToUint8Array(message), secretKey),
     );
     op._key = hash(message);
